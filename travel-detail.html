@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Details - BS Connect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            padding: 2rem 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-240px);
+        }
+
+        .logo-section {
+            padding: 0 2rem 2rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Mobile Toggle */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 40px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #1f2937, #374151);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .edit-button {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .edit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Status Badge */
+        .status-section {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .status-confirmed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-waitlist {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .status-text {
+            font-size: 18px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Travel Cards */
+        .travel-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .travel-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .travel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        /* Journey Details */
+        .journey-route {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .station {
+            text-align: center;
+            flex: 1;
+        }
+
+        .station-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 4px;
+        }
+
+        .station-code {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .station-time {
+            font-size: 16px;
+            color: #374151;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .route-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 2;
+            position: relative;
+        }
+
+        .route-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 2px;
+        }
+
+        .train-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 1;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .info-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .pnr-highlight {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left-color: #f59e0b;
+        }
+
+        .train-highlight {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-left-color: #3b82f6;
+        }
+
+        /* Seat Details */
+        .seat-details {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 20px;
+            margin-top: 2rem;
+        }
+
+        .seat-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .seat-info {
+            flex: 1;
+        }
+
+        .seat-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .seat-description {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* Passenger Info */
+        .passenger-card {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .passenger-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 80px;
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .header-title {
+                font-size: 24px;
+            }
+            
+            .travel-card {
+                padding: 1.5rem;
+            }
+            
+            .journey-route {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .route-line {
+                transform: rotate(90deg);
+                height: 60px;
+            }
+            
+            .route-line::before {
+                left: 50%;
+                right: 50%;
+                top: 10%;
+                bottom: 10%;
+                width: 3px;
+                height: auto;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .seat-details {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Overlay for mobile */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Animation */
+        .travel-card {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="logo">🚂</div>
+                <h1 class="app-title">BS Connect</h1>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Chat</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🚂</span>
+                <span>Travel Details</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+            <a href="about.html" class="nav-item active">
+                <span class="nav-icon">ℹ️</span>
+                <span>About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mobile Toggle -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        ☰
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Page Header -->
+        <header class="page-header">
+            <div class="header-info">
+                <h1 class="header-title">Travel Details</h1>
+                <p class="header-subtitle">Your upcoming journey information</p>
+            </div>
+            <a href="#" class="edit-button" onclick="editDetails()">
+                <span>✏️</span>
+                Edit Details
+            </a>
+        </header>
+
+        <!-- Status Section -->
+        <!-- <section class="status-section">
+            <div class="status-badge status-confirmed">
+                <span>✅</span>
+                <span>CONFIRMED</span>
+            </div>
+            <p class="status-text">Your ticket is confirmed and ready for travel</p>
+        </section> -->
+
+        <!-- Travel Container -->
+        <div class="travel-container">
+            <!-- Journey Overview -->
+            <div class="travel-card">
+                <h3 class="card-title">
+                    <span class="card-icon">🚆</span>
+                    Journey Overview
+                </h3>
+                
+                <div class="journey-route">
+                    <div class="station">
+                        <div class="station-name">Chennai Central</div>
+                        <div class="station-code">MAS</div>
+                        <div class="station-time">06:30 AM</div>
+                    </div>
+                    
+                    <div class="route-line">
+                        <div class="train-icon">🚂</div>
+                    </div>
+                    
+                    <div class="station">
+                        <div class="station-name">New Delhi</div>
+                        <div class="station-code">NDLS</div>
+                        <div class="station-time">10:45 PM</div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item train-highlight">
+                        <div class="info-label">Train Number</div>
+                        <div class="info-value">12622</div>
+                    </div>
+                    <div class="info-item train-highlight">
+                        <div class="info-label">Train Name</div>
+                        <div class="info-value">Tamil Nadu Express</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Travel Date</div>
+                        <div class="info-value">29th May 2025</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Journey Duration</div>
+                        <div class="info-value">28h 15m</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="travel-card">
+                <h3 class="card-title">
+                    <span class="card-icon">🎫</span>
+                    Booking Details
+                </h3>
+                
+                <div class="info-grid">
+                    <div class="info-item pnr-highlight">
+                        <div class="info-label">PNR Number</div>
+                        <div class="info-value">4526789123</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ticket Status</div>
+                        <div class="info-value">CNF/Confirmed</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Class</div>
+                        <div class="info-value">2A (AC II Tier)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Quota</div>
+                        <div class="info-value">General</div>
+                    </div>
+                </div>
+
+                <div class="seat-details">
+                    <div class="seat-icon">🛏️</div>
+                    <div class="seat-info">
+                        <div class="seat-title">Coach B3, Berth 24 (Upper)</div>
+                        <div class="seat-description">AC 2-Tier Coach with charging points and reading lights</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Information -->
+            <!-- <div class="travel-card">
+                <h3 class="card-title">
+                    <span class="card-icon">👤</span>
+                    Passenger Information
+                </h3>
+                
+                <div class="passenger-card">
+                    <div class="passenger-info">
+                        <div class="info-item">
+                            <div class="info-label">Student ID</div>
+                            <div class="info-value">BS2024001</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Name</div>
+                            <div class="info-value">Rahul Kumar Singh</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Age</div>
+                            <div class="info-value">21 Years</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">Male</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Mobile Number</div>
+                            <div class="info-value">+91 98765 43210</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">ID Proof</div>
+                            <div class="info-value">Aadhaar Card</div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Additional Information -->
+            <div class="travel-card">
+                <h3 class="card-title">
+                    <span class="card-icon">ℹ️</span>
+                    Important Information
+                </h3>
+                
+                <!-- <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Booking Date</div>
+                        <div class="info-value">15th May 2025</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Chart Status</div>
+                        <div class="info-value">Chart Prepared</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fare</div>
+                        <div class="info-value">₹2,485</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Distance</div>
+                        <div class="info-value">2,180 km</div>
+                    </div>
+                </div> -->
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: #fef3c7; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                    <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">🚨 Travel Reminders</div>
+                    <ul style="color: #92400e; padding-left: 1rem;">
+                        <li>Carry valid ID proof during travel</li>
+                        <li>Report at the station 30 minutes before departure</li>
+                        <li>Keep PNR number handy for verification</li>
+                        <li>Check platform number before boarding</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Minimal JavaScript for mobile sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('expanded');
+            }
+        });
+
+        // Edit details function
+        function editDetails() {
+            // This would redirect to edit page
+            alert('Redirecting to edit travel details page...');
+            // In a real application, you would use:
+            // window.location.href = 'edit-travel-details.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Paradox Travel Connect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 15px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            font-size: 24px;
+        }
+
+        .app-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .app-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+
+        .forms-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .form-card.hidden {
+            display: none;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #718096;
+            font-size: 16px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 8px;
+        }
+
+        .step.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .step.completed {
+            background: #10b981;
+            color: white;
+        }
+
+        .step.inactive {
+            background: #e5e7eb;
+            color: #9ca3af;
+        }
+
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: #e5e7eb;
+            margin: 0 4px;
+        }
+
+        .step-line.completed {
+            background: #10b981;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .optional {
+            color: #9ca3af;
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input.error, .form-select.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-input.success {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .success-message {
+            color: #10b981;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .email-hint {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .radio-label {
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #e5e7eb;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            width: 0%;
+        }
+
+        .strength-fill.weak {
+            background: #ef4444;
+            width: 25%;
+        }
+
+        .strength-fill.fair {
+            background: #f59e0b;
+            width: 50%;
+        }
+
+        .strength-fill.good {
+            background: #3b82f6;
+            width: 75%;
+        }
+
+        .strength-fill.strong {
+            background: #10b981;
+            width: 100%;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .strength-text.weak { color: #ef4444; }
+        .strength-text.fair { color: #f59e0b; }
+        .strength-text.good { color: #3b82f6; }
+        .strength-text.strong { color: #10b981; }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .forms-container {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-card {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .container {
+                padding: 16px;
+            }
+            
+            .form-card {
+                padding: 24px 20px;
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .submit-btn {
+                padding: 16px 20px;
+                font-size: 17px;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .container {
+                padding: 40px;
+            }
+            
+            .header {
+                padding-top: 40px;
+                margin-bottom: 40px;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+            
+            .app-title {
+                font-size: 32px;
+            }
+            
+            .app-subtitle {
+                font-size: 16px;
+            }
+            
+            .form-card {
+                padding: 48px;
+            }
+            
+            .form-title {
+                font-size: 32px;
+            }
+            
+            .form-subtitle {
+                font-size: 18px;
+            }
+
+            .form-card.desktop-visible {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🚂</div>
+            <h1 class="app-title">Paradox Travel Connect</h1>
+            <p class="app-subtitle">Create Your Account</p>
+        </div>
+
+        <div class="forms-container">
+            <!-- Step 1: Registration Form -->
+            <div class="form-card" id="registrationCard">
+                <div class="form-header">
+                    <div class="step-indicator">
+                        <div class="step active" id="step1">1</div>
+                        <div class="step-line" id="line1"></div>
+                        <div class="step inactive" id="step2">2</div>
+                    </div>
+                    <h2 class="form-title">Personal Details</h2>
+                    <p class="form-subtitle">Tell us about yourself</p>
+                </div>
+
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="name" name="name" required>
+                        <div class="error-message" id="nameError">Please enter your full name</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Student Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="email" name="email" required 
+                               placeholder="20xxxxxxx@ds.study.iitm.ac.in">
+                        <div class="email-hint">Only IITM student emails (20-25 batch) are allowed</div>
+                        <div class="error-message" id="emailError">Please enter a valid IITM student email</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number <span class="optional">(Optional)</span></label>
+                        <input type="tel" class="form-input" id="phone" name="phone" 
+                               placeholder="+91 9876543210">
+                        <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Program Level <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="foundation" name="level" value="Foundation" required>
+                                <label class="radio-label" for="foundation">Foundation</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="diploma" name="level" value="Diploma" required>
+                                <label class="radio-label" for="diploma">Diploma</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="bsc" name="level" value="B.Sc" required>
+                                <label class="radio-label" for="bsc">B.Sc</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="bs" name="level" value="BS" required>
+                                <label class="radio-label" for="bs">BS</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="levelError">Please select your program level</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="city" name="city" required 
+                               placeholder="Enter your city">
+                        <div class="error-message" id="cityError">Please enter your city</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">State <span class="required">*</span></label>
+                        <select class="form-select" id="state" name="state" required>
+                            <option value="">Select your state</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                            <option value="Ladakh">Ladakh</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                        </select>
+                        <div class="error-message" id="stateError">Please select your state</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Have you booked your ticket for Paradox 2025? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="ticketYes" name="ticketBooked" value="Yes" required>
+                                <label class="radio-label" for="ticketYes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" class="radio-input" id="ticketNo" name="ticketBooked" value="No" required>
+                                <label class="radio-label" for="ticketNo">No</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="ticketError">Please select whether you've booked your ticket</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Proceed</button>
+                </form>
+
+                <div class="login-link">
+                    Already have an account? <a href="#" onclick="goToLogin()">Login here</a>
+                </div>
+            </div>
+
+            <!-- Step 2: Password Setup Form -->
+            <div class="form-card hidden" id="passwordCard">
+                <div class="form-header">
+                    <div class="step-indicator">
+                        <div class="step completed" id="step1b">1</div>
+                        <div class="step-line completed" id="line1b"></div>
+                        <div class="step active" id="step2b">2</div>
+                    </div>
+                    <h2 class="form-title">Set Password</h2>
+                    <p class="form-subtitle">Secure your account</p>
+                </div>
+
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label class="form-label">Password <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="password" name="password" required>
+                        <div class="password-hint">Password must be at least 8 characters with uppercase, lowercase, and number</div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Enter password</div>
+                        </div>
+                        <div class="error-message" id="passwordError">Please enter a valid password</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="confirmPassword" name="confirmPassword" required>
+                        <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                        <div class="success-message" id="confirmPasswordSuccess">Passwords match!</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+
+                <div class="login-link">
+                    <a href="#" onclick="goBackToStep1()" style="color: #667eea;">← Back to personal details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+    <script>
+        let registrationData = {};
+
+// Email validation for IITM students
+function validateEmail(email) {
+    const emailRegex = /^[^@]+@ds\.study\.iitm\.ac\.in$/;
+    return emailRegex.test(email);
+}
+
+
+// Phone validation (optional but if provided, should be valid)
+function validatePhone(phone) {
+    if (!phone) return true; // Optional field
+    const phoneRegex = /^(\+91[-\s]?)?[0-9]{10}$/;
+    return phoneRegex.test(phone.replace(/[-\s]/g, ''));
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    const strengthLevels = ['weak', 'weak', 'fair', 'good', 'strong'];
+    const strengthTexts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+    
+    return {
+        level: strengthLevels[Math.min(strength, 4)],
+        text: strengthTexts[Math.min(strength, 4)]
+    };
+}
+
+// Show password step
+function showPasswordStep() {
+    const isDesktop = window.innerWidth > 768;
+    
+    if (isDesktop) {
+        // Desktop: show both cards side by side
+        document.getElementById('passwordCard').classList.remove('hidden');
+        document.getElementById('passwordCard').classList.add('desktop-visible');
+    } else {
+        // Mobile: hide registration card, show password card
+        document.getElementById('registrationCard').classList.add('hidden');
+        document.getElementById('passwordCard').classList.remove('hidden');
+    }
+}
+
+// Go back to step 1
+function goBackToStep1() {
+    const isDesktop = window.innerWidth > 768;
+    
+    if (isDesktop) {
+        // Desktop: hide password card
+        document.getElementById('passwordCard').classList.add('hidden');
+        document.getElementById('passwordCard').classList.remove('desktop-visible');
+    } else {
+        // Mobile: show registration card, hide password card
+        document.getElementById('registrationCard').classList.remove('hidden');
+        document.getElementById('passwordCard').classList.add('hidden');
+    }
+}
+
+// Go to login page
+function goToLogin() {
+    // This would typically redirect to a login page
+    alert('Redirect to login page would happen here');
+    // window.location.href = 'login.html';
+}
+
+// Validate individual field
+function validateField(fieldName, value) {
+    const field = document.getElementById(fieldName) || document.querySelector(`input[name="${fieldName}"]:checked`) || document.querySelector(`select[name="${fieldName}"]`);
+    const errorElement = document.getElementById(fieldName + 'Error');
+    
+    let isValid = true;
+    let errorMessage = '';
+    
+    switch(fieldName) {
+        case 'name':
+            isValid = value && value.trim().length >= 2;
+            errorMessage = 'Please enter your full name (at least 2 characters)';
+            break;
+        case 'email':
+            isValid = value && validateEmail(value);
+            errorMessage = 'Email must be in format: 20-25xxxxxxx@ds.study.iitm.ac.in';
+            break;
+        case 'phone':
+            isValid = !value || validatePhone(value); // Optional field
+            errorMessage = 'Please enter a valid 10-digit phone number';
+            break;
+        case 'city':
+            isValid = value && value.trim().length >= 2;
+            errorMessage = 'Please enter your city';
+            break;
+        case 'state':
+            isValid = value && value !== '';
+            errorMessage = 'Please select your state';
+            break;
+        case 'level':
+            isValid = value && value !== '';
+            errorMessage = 'Please select your program level';
+            break;
+        case 'ticketBooked':
+            isValid = value && value !== '';
+            errorMessage = 'Please select whether you\'ve booked your ticket';
+            break;
+    }
+    
+    if (field) {
+        if (isValid) {
+            field.classList.remove('error');
+            field.classList.add('success');
+        } else {
+            field.classList.add('error');
+            field.classList.remove('success');
+        }
+    }
+    
+    if (errorElement) {
+        if (isValid) {
+            errorElement.style.display = 'none';
+        } else {
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+        }
+    }
+    
+    return isValid;
+}
+
+// Initialize event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Real-time validation for form inputs
+    document.getElementById('name').addEventListener('input', function() {
+        validateField('name', this.value);
+    });
+
+    document.getElementById('email').addEventListener('input', function() {
+        validateField('email', this.value);
+    });
+
+    document.getElementById('phone').addEventListener('input', function() {
+        validateField('phone', this.value);
+    });
+
+    document.getElementById('city').addEventListener('input', function() {
+        validateField('city', this.value);
+    });
+
+    document.getElementById('state').addEventListener('change', function() {
+        validateField('state', this.value);
+    });
+
+    // Radio button validation
+    document.querySelectorAll('input[name="level"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            validateField('level', this.value);
+        });
+    });
+
+    document.querySelectorAll('input[name="ticketBooked"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            validateField('ticketBooked', this.value);
+        });
+    });
+
+    // Password strength real-time checking
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const strength = checkPasswordStrength(password);
+        const fillElement = document.getElementById('strengthFill');
+        const textElement = document.getElementById('strengthText');
+        
+        fillElement.className = `strength-fill ${strength.level}`;
+        textElement.className = `strength-text ${strength.level}`;
+        textElement.textContent = password ? strength.text : 'Enter password';
+    });
+
+    // Confirm password validation
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        const errorElement = document.getElementById('confirmPasswordError');
+        const successElement = document.getElementById('confirmPasswordSuccess');
+        
+        if (confirmPassword && password !== confirmPassword) {
+            this.classList.add('error');
+            this.classList.remove('success');
+            errorElement.style.display = 'block';
+            successElement.style.display = 'none';
+        } else if (confirmPassword && password === confirmPassword) {
+            this.classList.remove('error');
+            this.classList.add('success');
+            errorElement.style.display = 'none';
+            successElement.style.display = 'block';
+        } else {
+            this.classList.remove('error', 'success');
+            errorElement.style.display = 'none';
+            successElement.style.display = 'none';
+        }
+    });
+
+    // Step 1 form submission
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const requiredFields = ['name', 'email', 'level', 'city', 'state', 'ticketBooked'];
+        let allValid = true;
+        
+        // Validate all required fields
+        requiredFields.forEach(field => {
+            const value = formData.get(field);
+            if (!validateField(field, value)) {
+                allValid = false;
+            }
+        });
+        
+        // Additional phone validation if provided
+        const phone = formData.get('phone');
+        if (phone && !validateField('phone', phone)) {
+            allValid = false;
+        }
+        
+        if (allValid) {
+            // Store registration data
+            registrationData = Object.fromEntries(formData.entries());
+            console.log('Step 1 data stored:', registrationData);
+            showPasswordStep();
+        } else {
+            // Scroll to first error
+            const firstError = document.querySelector('.form-input.error, .form-select.error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+            }
+        }
+    });
+
+    // Step 2 form submission (completing the incomplete part)
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        let isValid = true;
+        
+        // Validate password strength
+        const strength = checkPasswordStrength(password);
+        if (password.length < 8 || !(/[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password))) {
+            isValid = false;
+            document.getElementById('password').classList.add('error');
+            document.getElementById('passwordError').textContent = 'Password must be at least 8 characters with uppercase, lowercase, and number';
+            document.getElementById('passwordError').style.display = 'block';
+        } else {
+            document.getElementById('password').classList.remove('error');
+            document.getElementById('passwordError').style.display = 'none';
+        }
+        
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            isValid = false;
+            document.getElementById('confirmPassword').classList.add('error');
+            document.getElementById('confirmPasswordError').style.display = 'block';
+            document.getElementById('confirmPasswordSuccess').style.display = 'none';
+        } else if (confirmPassword) {
+            document.getElementById('confirmPassword').classList.remove('error');
+            document.getElementById('confirmPassword').classList.add('success');
+            document.getElementById('confirmPasswordError').style.display = 'none';
+            document.getElementById('confirmPasswordSuccess').style.display = 'block';
+        }
+        
+        if (isValid) {
+            // Combine all registration data
+            const completeData = {
+                ...registrationData,
+                password: password
+            };
+            
+            // Disable submit button to prevent double submission
+            const submitBtn = this.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating Account...';
+            
+            // Simulate API call (replace with actual registration logic)
+            setTimeout(() => {
+                console.log('Complete registration data:', completeData);
+                alert('Account created successfully! Welcome to Paradox Travel Connect!');
+                
+                // Reset form or redirect to success page
+                // window.location.href = 'success.html';
+                
+                // For demo purposes, reset the form
+                resetForm();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+            }, 2000);
+        } else {
+            // Focus on first error field
+            const firstError = document.querySelector('#passwordCard .form-input.error');
+            if (firstError) {
+                firstError.focus();
+            }
+        }
+    });
+
+    // Handle window resize for responsive behavior
+    window.addEventListener('resize', function() {
+        // Reset cards visibility on resize to handle desktop/mobile transitions
+        const registrationCard = document.getElementById('registrationCard');
+        const passwordCard = document.getElementById('passwordCard');
+        
+        if (window.innerWidth > 768) {
+            // Desktop view
+            registrationCard.classList.remove('hidden');
+            if (passwordCard.classList.contains('desktop-visible')) {
+                passwordCard.classList.remove('hidden');
+            }
+        } else {
+            // Mobile view
+            if (!passwordCard.classList.contains('hidden')) {
+                registrationCard.classList.add('hidden');
+            } else {
+                registrationCard.classList.remove('hidden');
+            }
+            passwordCard.classList.remove('desktop-visible');
+        }
+    });
+});
+
+// Reset entire form to initial state
+function resetForm() {
+    // Clear stored data
+    registrationData = {};
+    
+    // Reset all form fields
+    document.getElementById('registrationForm').reset();
+    document.getElementById('passwordForm').reset();
+    
+    // Clear all validation classes and messages
+    document.querySelectorAll('.form-input, .form-select').forEach(input => {
+        input.classList.remove('error', 'success');
+    });
+    
+    document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+        msg.style.display = 'none';
+    });
+    
+    // Reset password strength indicator
+    const fillElement = document.getElementById('strengthFill');
+    const textElement = document.getElementById('strengthText');
+    fillElement.className = 'strength-fill';
+    textElement.className = 'strength-text';
+    textElement.textContent = 'Enter password';
+    
+    // Return to step 1
+    document.getElementById('registrationCard').classList.remove('hidden');
+    document.getElementById('passwordCard').classList.add('hidden');
+    document.getElementById('passwordCard').classList.remove('desktop-visible');
+}
+
+// Additional utility functions for form handling
+function showSuccessMessage(message) {
+    // Create and show success notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        z-index: 1000;
+        font-weight: 600;
+        max-width: 300px;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+function showErrorMessage(message) {
+    // Create and show error notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ef4444;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        z-index: 1000;
+        font-weight: 600;
+        max-width: 300px;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+    </script>
+</html>
